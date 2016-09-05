@@ -24,15 +24,15 @@
     if (![object isKindOfClass:[self class]]) {
         return NO;
     }
-    
+
     if (object->_staticDictionary != self->_staticDictionary && ![object->_staticDictionary isEqualToDictionary:self->_staticDictionary]) {
         return NO;
     }
-    
+
     if (object->_dynamicAttributes != self->_dynamicAttributes) {
         return NO;
     }
-    
+
     return YES;
 }
 
@@ -44,12 +44,12 @@
     if (self.staticDictionary) {
         return self.staticDictionary;
     }
-    
-    if (self.dynamicAttributes) {
+
+    if (self.dynamicAttributes && tag.location < [string length]) {
         NSDictionary *existingAttributes = [string attributesAtIndex:tag.location effectiveRange:NULL];
         return self.dynamicAttributes(tag.tagName, tag.tagAttributes, existingAttributes);
     }
-    
+
     return @{};
 }
 
