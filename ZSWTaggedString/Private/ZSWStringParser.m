@@ -59,12 +59,14 @@ extern NSString *ZSWEscapedStringForString(NSString *unescapedString) {
         }
         
         // Eat the < nom nom nom
-        [scanner scanCharactersFromSet:tagStartCharacterSet intoString:NULL];
+        NSString *ateSymbols;
+        [scanner scanCharactersFromSet:tagStartCharacterSet intoString:&ateSymbols];
         
         if ([scratchString characterAtIndex:(scratchString.length - 1)] == kTagIgnore) {
             // We found a tag start, but it's one that's been escaped. Skip it, and append the start tag we just gobbled up.
             [pendingString deleteCharactersInRange:NSMakeRange(pendingString.length - 1, 1)];
             [self appendString:kTagStart intoAttributedString:pendingString];
+            scanner.scanLocation -= [ateSymbols length] - 1;
             continue;
         }
         
@@ -76,7 +78,8 @@ extern NSString *ZSWEscapedStringForString(NSString *unescapedString) {
         }
         
         // Eat the > nom nom nom
-        [scanner scanCharactersFromSet:tagEndCharacterSet intoString:NULL];
+        [scanner scanCharactersFromSet:tagEndCharacterSet intoString:&ateSymbols];
+        scanner.scanLocation -= [ateSymbols length] - 1;
         
         NSScanner *tagScanner = [NSScanner scannerWithString:scratchString];
         NSString *tagName;
